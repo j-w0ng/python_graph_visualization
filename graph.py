@@ -1,7 +1,5 @@
-import matplotlib
+
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from gmplot import gmplot
 
 vancouver_file_path = "/Users/jonathan/Downloads/csv_street_trees/StreetTrees_CityWide.csv"
