@@ -1,33 +1,43 @@
 import pandas as pd
+import numpy as np
 from gmplot import gmplot
 
-vancouver_file_path = "/Users/jonathan/Downloads/csv_street_trees/StreetTrees_CityWide.csv"
 
-vancouver_data = pd.read_csv(vancouver_file_path)
+class Graph:
 
-vancouver_data_cn = vancouver_data.set_index("COMMON_NAME", drop=False)
+    unique_cn = None;
+    vancouver_data_cn = None;
 
-# filter all cherry blossom trees
-cherry_blossom = vancouver_data_cn.loc["KWANZAN FLOWERING CHERRY", :]
+    def __init__(self):
+        vancouver_file_path = "/Users/jonathan/Downloads/csv_street_trees/StreetTrees_CityWide.csv"
+        vancouver_data = pd.read_csv(vancouver_file_path)
+        self.vancouver_data_cn = vancouver_data.set_index("COMMON_NAME", drop=False)
 
-# extracting latitude and longitude
-cherry_blossom_location = cherry_blossom[["LATITUDE", "LONGITUDE"]]
+        common_names = self.vancouver_data_cn["COMMON_NAME"].values
+        self.unique_cn = np.unique(common_names)
+        
+    def filter(self, event, selection):
+        # filter all cherry blossom trees
+        cherry_blossom = self.vancouver_data_cn.loc[selection.get(), :]
 
-# removing all trees without location
-cherry_blossom_location_final = cherry_blossom_location.loc[cherry_blossom_location["LATITUDE"] > 0]
+        # extracting latitude and longitude
+        cherry_blossom_location = cherry_blossom[["LATITUDE", "LONGITUDE"]]
 
-locations = cherry_blossom_location_final.to_numpy()
+        # removing all trees without location
+        cherry_blossom_location_final = cherry_blossom_location.loc[cherry_blossom_location["LATITUDE"] > 0]
 
-lats = []
-longs = []
-for l in locations:
-    lats.append(l[0])
-    longs.append(l[1])
+        locations = cherry_blossom_location_final.to_numpy()
 
-# center location near QE park
-gmap = gmplot.GoogleMapPlotter(49.238680, -123.139569, 13)
+        lats = []
+        longs = []
+        for l in locations:
+            lats.append(l[0])
+            longs.append(l[1])
 
-gmap.heatmap(lats, longs)
+        # center location near QE park
+        gmap = gmplot.GoogleMapPlotter(49.238680, -123.139569, 13)
 
-gmap.draw("cherry_blossoms.html")
+        gmap.heatmap(lats, longs)
+
+        gmap.draw("cherry_blossoms.html")
 
