@@ -39,5 +39,5 @@ class Graph:
 
         gmap.heatmap(lats, longs)
 
-        gmap.draw("cherry_blossoms.html")
+        gmap.draw("tree_map.html")
 
